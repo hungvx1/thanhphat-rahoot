@@ -1,18 +1,13 @@
 "use client"
-
 import { CommonStatusDataMap } from "@rahoot/common/types/game/status"
-import AnswerButton from "@rahoot/web/components/AnswerButton"
 import { useEvent, useSocket } from "@rahoot/web/contexts/socketProvider"
 import { usePlayerStore } from "@rahoot/web/stores/player"
 import {
-  ANSWERS_COLORS,
-  ANSWERS_ICONS,
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@rahoot/web/utils/constants"
-import clsx from "clsx"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useSound from "use-sound"
 
 type Props = {
@@ -20,56 +15,49 @@ type Props = {
 }
 
 const Answers = ({
-  data: { question, answers, image, audio, video, time, totalPlayer },
+  data: { question, image, audio, video, time, totalPlayer },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
   const { player } = usePlayerStore()
-
   const [cooldown, setCooldown] = useState(time)
   const [totalAnswer, setTotalAnswer] = useState(0)
+  const [answered, setAnswered] = useState(false)
+  const [textInput, setTextInput] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const [sfxPop] = useSound(SFX_ANSWERS_SOUND, {
-    volume: 0.1,
-  })
-
+  const [sfxPop] = useSound(SFX_ANSWERS_SOUND, { volume: 0.1 })
   const [playMusic, { stop: stopMusic }] = useSound(SFX_ANSWERS_MUSIC, {
     volume: 0.2,
     interrupt: true,
     loop: true,
   })
 
-  const handleAnswer = (answerKey: number) => () => {
-    if (!player) {
-      return
-    }
-
+  const handleSubmit = () => {
+    if (!player || answered || !textInput.trim()) return
+    setAnswered(true)
     socket?.emit("player:selectedAnswer", {
       gameId,
-      data: {
-        answerKey,
-      },
+      data: { answerKey: textInput.trim() },
     })
     sfxPop()
   }
 
   useEffect(() => {
-    if (video || audio) {
-      return
-    }
-
+    if (video || audio) return
     playMusic()
-
-    // eslint-disable-next-line consistent-return
     return () => {
       stopMusic()
     }
   }, [playMusic])
 
+  useEffect(() => {
+    if (player && inputRef.current) inputRef.current.focus()
+  }, [player])
+
   useEvent("game:cooldown", (sec) => {
     setCooldown(sec)
   })
-
   useEvent("game:playerAnswer", (count) => {
     setTotalAnswer(count)
     sfxPop()
@@ -81,7 +69,6 @@ const Answers = ({
         <h2 className="text-center text-2xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl">
           {question}
         </h2>
-
         {Boolean(audio) && !player && (
           <audio
             className="m-4 mb-2 w-auto rounded-md"
@@ -90,7 +77,6 @@ const Answers = ({
             controls
           />
         )}
-
         {Boolean(video) && !player && (
           <video
             className="m-4 mb-2 aspect-video max-h-60 w-auto rounded-md px-4 sm:max-h-100"
@@ -99,7 +85,6 @@ const Answers = ({
             controls
           />
         )}
-
         {Boolean(image) && (
           <img
             alt={question}
@@ -110,12 +95,12 @@ const Answers = ({
       </div>
 
       <div>
-        <div className="mx-auto mb-4 flex w-full max-w-7xl justify-between gap-1 px-2 text-lg font-bold text-white md:text-xl">
-          <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
+        <div className="mx-auto mb-4 flex w-full max-w-7xl justify-between px-2 text-lg font-bold text-white">
+          <div className="flex flex-col items-center rounded-full bg-black/40 px-4">
             <span className="translate-y-1 text-sm">Time</span>
             <span>{cooldown}</span>
           </div>
-          <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
+          <div className="flex flex-col items-center rounded-full bg-black/40 px-4">
             <span className="translate-y-1 text-sm">Answers</span>
             <span>
               {totalAnswer}/{totalPlayer}
@@ -123,17 +108,37 @@ const Answers = ({
           </div>
         </div>
 
-        <div className="mx-auto mb-4 grid w-full max-w-7xl grid-cols-2 gap-1 rounded-full px-2 text-lg font-bold text-white md:text-xl">
-          {answers.map((answer, key) => (
-            <AnswerButton
-              key={key}
-              className={clsx(ANSWERS_COLORS[key])}
-              icon={ANSWERS_ICONS[key]}
-              onClick={handleAnswer(key)}
-            >
-              {answer}
-            </AnswerButton>
-          ))}
+        <div className="mx-auto mb-4 w-full max-w-7xl px-2">
+          {!player ? (
+            // Manager view — just a neutral waiting indicator
+            <div className="rounded-xl bg-black/40 px-6 py-4 text-center text-lg font-semibold text-white/60">
+              Players are typing…
+            </div>
+          ) : answered ? (
+            <p className="text-center text-xl font-bold text-white">
+              ✅ Answer submitted!
+            </p>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                placeholder="Type your answer…"
+                maxLength={120}
+                className="flex-1 rounded-xl border-2 border-white/30 bg-black/40 px-4 py-3 text-lg font-bold text-white placeholder-white/50 outline-none focus:border-white/70"
+              />
+              <button
+                onClick={handleSubmit}
+                disabled={!textInput.trim()}
+                className="rounded-xl bg-white px-6 py-3 text-lg font-bold text-black transition hover:bg-white/90 disabled:opacity-40"
+              >
+                Submit
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

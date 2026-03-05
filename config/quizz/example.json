@@ -1,44 +1,75 @@
 {
-  "subject": "Example Quizz",
+  "subject": "Đố vui có thưởng 8/3",
   "questions": [
     {
-      "question": "What is good answer ?",
-      "answers": ["No", "Good answer", "No", "No"],
-      "solution": 1,
+      "question": "Buồn một mình gọi là gì?",
+      "answers": [
+        "sầu riêng"
+      ],
       "cooldown": 5,
       "time": 15
     },
     {
-      "question": "What is good answer with image ?",
-      "answers": ["No", "No", "No", "Good answer"],
-      "image": "https://placehold.co/600x400.png",
-      "solution": 3,
-      "cooldown": 5,
-      "time": 20
-    },
-    {
-      "question": "What is good answer with two answers ?",
-      "answers": ["Good answer", "No"],
-      "image": "https://placehold.co/600x400.png",
-      "solution": 0,
-      "cooldown": 5,
-      "time": 20
-    },
-    {
-      "question": "What is good answer with video ?",
-      "answers": ["Good answer", "No", "No", "No"],
-      "video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      "solution": 0,
-      "cooldown": 5,
-      "time": 10
-    },
-    {
-      "question": "What is good answer with audio ?",
-      "answers": ["No", "No", "Good answer", "No"],
-      "audio": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      "solution": 2,
+      "question": "Biển cấm đàn ông gọi là gì?",
+      "answers": [
+        "X-men",
+        "X men",
+        "xmen"
+      ],
       "cooldown": 5,
       "time": 15
+    },
+    {
+      "question": "Có bố là nhà toán học thì được gọi là gì?",
+      "answers": [
+        "Mát cha",
+        "Matcha",
+        "Math cha",
+        "Mathcha"
+      ],
+      "cooldown": 5,
+      "time": 20
+    },
+    {
+      "question": "Họa sĩ vẽ liên tục thì gọi là gì?",
+      "answers": [
+        "Tô Hoài"
+      ],
+      "cooldown": 5,
+      "time": 20
+    },
+    {
+      "question": "Cô giáo xin đi muộn gọi là gì?",
+      "answers": [
+        "Chocolate",
+        "Cho cô lết",
+        "Cho cô late",
+        "Cho-co-late",
+        "Choco lết"
+      ],
+      "cooldown": 5,
+      "time": 15
+    },
+    {
+      "question": "Sư cô còn trẻ gọi là gì?",
+      "answers": [
+        "Nicoteen",
+        "Nico-teen",
+        "Nicotin",
+        "Nicotine"
+      ],
+      "cooldown": 5,
+      "time": 15
+    },
+    {
+      "question": "Mấy đứa hay ngồi sát người yêu gọi là gì?",
+      "answers": [
+        "Áp bồ",
+        "Áp pồ",
+        "Apple"
+      ],
+      "cooldown": 5,
+      "time": 20
     }
   ]
 }
