@@ -522,7 +522,7 @@ class Game {
 
 			this.broadcastStatus(STATUS.FINISHED, {
 				subject: this.quizz.subject,
-				top: this.leaderboard.slice(0, 3),
+				top: this.leaderboard.slice(0, 5),
 			})
 
 			return
@@ -533,8 +533,8 @@ class Game {
 			: this.leaderboard
 
 		this.sendStatus(this.manager.id, STATUS.SHOW_LEADERBOARD, {
-			oldLeaderboard: oldLeaderboard.slice(0, 5),
-			leaderboard: this.leaderboard.slice(0, 5),
+			oldLeaderboard: oldLeaderboard.slice(0, 10),
+			leaderboard: this.leaderboard.slice(0, 10),
 		})
 
 		this.tempOldLeaderboard = null
